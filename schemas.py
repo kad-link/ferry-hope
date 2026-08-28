@@ -11,7 +11,8 @@ class UserResponse(BaseModel):
     user_name: str
     email: str
 
-
+class OrderCreate(BaseModel):
+    product_id: int
 class OrderResponse(BaseModel):
     order_id: int
     ordered_by: int

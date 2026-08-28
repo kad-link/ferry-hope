@@ -66,4 +66,48 @@ def place_order(
     db.refresh(new_order)
 
     return new_order
-    
+
+
+@app.get("/{user_id}/orders", response_model= list[OrderResponse])
+def get_all_orders(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+
+    db_user = db.query(db_models.User).filter(
+        db_models.User.user_id == user_id
+    ).first()
+
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not there")
+
+    all_orders = db_user.orders
+
+    return all_orders
+
+
+@app.get("/{user_id}/orders/{order_id}", response_model=OrderResponse)
+def get_order_by_id(
+    user_id: int,
+    order_id: int,
+    db: Session = Depends(get_db)
+):
+
+    db_user = db.query(db_models.User).filter(
+        db_models.User.user_id == user_id
+    ).first()
+
+    if not db_user:
+        raise HTTPException(status_code=404, detail="user not found")
+
+    db_order = db.query(db_models.Order).filter(
+        db_models.Order.order_id == order_id
+    ).first()
+
+
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    return db_order
+
+

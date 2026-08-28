@@ -26,7 +26,7 @@ class Order(Base):
     ordered_by: Mapped[int] = mapped_column(ForeignKey("users.user_id"), nullable=False)
     product_id: Mapped[int] = mapped_column(ForeignKey("products.product_id"), nullable=False)
     placed_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
-    status: Mapped[str] = mapped_column(String(50), nullable=False)
+    status: Mapped[str] = mapped_column(String(50), default="Ordered" , nullable=False)
 
     user: Mapped["User"] = relationship(back_populates="orders")
 

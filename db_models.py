@@ -13,7 +13,7 @@ class User(Base):
     user_id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     user_name: Mapped[str] = mapped_column(String(100), nullable=False)
     email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
-    # password: Mapped[str] = mapped_column(String(255), nullable=False)
+    password: Mapped[str] = mapped_column(String(255), nullable=False)
 
     orders: Mapped[list["Order"]] = relationship(back_populates="user", cascade="all, delete-orphan")
 

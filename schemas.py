@@ -4,12 +4,16 @@ from datetime import datetime
 class UserCreate(BaseModel):
     user_name: str
     user_email: str
-
+    user_password: str
 
 class UserResponse(BaseModel):
     user_id: int
     user_name: str
     email: str
+
+class UserLogin(BaseModel):
+    user_email: str
+    user_password: str
 
 class OrderCreate(BaseModel):
     product_id: int

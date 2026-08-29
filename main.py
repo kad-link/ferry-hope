@@ -1,9 +1,11 @@
 from fastapi import FastAPI, Depends, HTTPException
-from schemas import UserCreate, UserResponse, OrderResponse
+from schemas import UserCreate, UserResponse, OrderResponse, UserLogin
 from sqlalchemy.orm import Session
 from dependencies import get_db
 from db_models import User, Order
 import db_models
+from utils.security import verify_password, hash_password
+from utils.jwt import create_access_token
 
 app = FastAPI()
 
@@ -17,6 +19,7 @@ def create_user(
     new_user = User(
         user_name = user.user_name,
         email = user.user_email,
+        password = hash_password(user.user_password)
     )
 
     db.add(new_user)
@@ -111,3 +114,26 @@ def get_order_by_id(
     return db_order
 
 
+@app.post("/login")
+def login(
+    user: UserLogin,
+    db: Session = Depends(get_db)
+):
+
+    db_user = db.query(db_models.User).filter(
+        db_models.User.email == user.user_email
+    ).first()
+
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not verify_password(user.user_password, db_user.password):
+        raise HTTPException(status_code=401, detail="invalid authentication")
+
+    access_token = create_access_token(db_user.user_id)
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+    

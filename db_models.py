@@ -1,6 +1,8 @@
 from datetime import datetime
 from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
 from sqlalchemy import String, Float, DateTime, ForeignKey, func
+from sqlalchemy import Enum
+from schemas import OrderStatus
 
 
 class Base(DeclarativeBase):
@@ -26,7 +28,7 @@ class Order(Base):
     ordered_by: Mapped[int] = mapped_column(ForeignKey("users.user_id"), nullable=False)
     product_id: Mapped[int] = mapped_column(ForeignKey("products.product_id"), nullable=False)
     placed_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
-    status: Mapped[str] = mapped_column(String(50), default="Ordered" , nullable=False)
+    status: Mapped[OrderStatus] = mapped_column(Enum(OrderStatus), default=OrderStatus.ORDERED , nullable=False)
 
     user: Mapped["User"] = relationship(back_populates="orders")
 

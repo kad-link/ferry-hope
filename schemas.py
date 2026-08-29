@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
+from enum import Enum
+
 
 class UserCreate(BaseModel):
     user_name: str
@@ -29,3 +31,8 @@ class AIRequest(BaseModel):
 
 class AIResponse(BaseModel):
     response: str
+
+class OrderStatus(str, Enum):
+    ORDERED = "ORDERED"
+    DELIVERED = "DELIVERED"
+    CANCELED = "CANCELED"

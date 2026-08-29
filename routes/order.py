@@ -34,12 +34,12 @@ def get_all_orders(
     db: Session = Depends(get_db)
 ):
 
-    db_user = find_user(user_id)
+    db_user = find_user(user_id, db)
 
     if not db_user:
         raise HTTPException(status_code=404, detail="User not there")
 
-    return get_all_orders(db_user)
+    return get_all_orders(db_user, db)
 
 
 @router.get("/{order_id}", response_model=OrderResponse)

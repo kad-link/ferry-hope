@@ -5,7 +5,7 @@ from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.graph.message import add_messages
 from langchain_core.messages import AnyMessage
 from dotenv import load_dotenv
-from utils.ai_tools import fetch_particular_order, fetch_all_orders_tool, place_an_order
+from utils.ai_tools import fetch_particular_order, fetch_all_orders_tool, place_an_order, mark_delivered, cancel_order
 from dataclasses import dataclass
 
 load_dotenv()
@@ -17,7 +17,10 @@ llm = ChatGroq(
 
 tools = [fetch_particular_order,
          fetch_all_orders_tool,
-         place_an_order]
+         place_an_order,
+         mark_delivered,
+         cancel_order
+         ]
 
 llm_with_tools = llm.bind_tools(tools)
 

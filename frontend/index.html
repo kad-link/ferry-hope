@@ -101,6 +101,39 @@
   </main>
 </section>
 
+  <!-- Front Desk (AI agent chat) -->
+  <button id="chat-toggle" class="chat-toggle" type="button" aria-expanded="false" aria-controls="chat-panel" hidden>
+    <span class="chat-toggle__glyph">&#9670;</span>
+    <span class="chat-toggle__label">Front Desk</span>
+  </button>
+
+  <aside id="chat-panel" class="chat-panel" hidden>
+    <header class="chat-panel__header">
+      <div class="chat-panel__title">
+        <span class="chat-panel__glyph">&#9670;</span>
+        <div>
+          <h2>The Front Desk</h2>
+          <p>Ask about your orders, or have it file one for you.</p>
+        </div>
+      </div>
+      <button id="chat-close" class="chat-panel__close" type="button" aria-label="Close chat">&times;</button>
+    </header>
+
+    <div id="chat-log" class="chat-log" aria-live="polite">
+      <div class="chat-msg chat-msg--agent">
+        <span class="chat-msg__from">Front Desk</span>
+        <p>Evening. Ask me to check a dispatch, place an order, or mark one delivered or canceled — I'll handle the ledger.</p>
+      </div>
+    </div>
+
+    <form id="chat-form" class="chat-form" autocomplete="off">
+      <input id="chat-input" type="text" name="message" placeholder="Ask the desk clerk…" required maxlength="500">
+      <button type="submit" class="chat-form__send" aria-label="Send message">
+        <span>Send</span>
+      </button>
+    </form>
+  </aside>
+
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="config.js"></script>

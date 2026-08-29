@@ -6,7 +6,7 @@ from dependencies import get_db
 from utils.jwt import create_access_token
 from services.auth_service import authenticate_user
 
-router = APIRouter(prefix="/login", tags=["Authentication"])
+router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 @router.post("/login")
 def login(
@@ -16,7 +16,7 @@ def login(
 
     db_user = authenticate_user(user, db)
 
-    if not db_models:
+    if not db_user:
         raise HTTPException(status_code=401, detail="Invalid Authentication")
 
     access_token = create_access_token(db_user.user_id)

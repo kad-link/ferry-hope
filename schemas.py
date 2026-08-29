@@ -36,3 +36,9 @@ class OrderStatus(str, Enum):
     ORDERED = "ORDERED"
     DELIVERED = "DELIVERED"
     CANCELED = "CANCELED"
+
+class ProductResponse(BaseModel):
+    product_id: int
+    product_name: str
+    price: float
+    description: str

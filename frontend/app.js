@@ -35,6 +35,13 @@
 
   const toastEl = document.getElementById("toast");
 
+  const chatToggle = document.getElementById("chat-toggle");
+  const chatPanel = document.getElementById("chat-panel");
+  const chatClose = document.getElementById("chat-close");
+  const chatLog = document.getElementById("chat-log");
+  const chatForm = document.getElementById("chat-form");
+  const chatInput = document.getElementById("chat-input");
+
   // ---------- helpers ----------
   function decodeJwtPayload(token) {
     try {
@@ -120,6 +127,7 @@
     state.userName = null;
     state.products = null;
     localStorage.removeItem(TOKEN_KEY);
+    resetChat();
     renderAuth();
     if (message) showToast(message, true);
   }
@@ -229,6 +237,7 @@
   function renderAuth() {
     authView.hidden = false;
     appView.hidden = true;
+    chatToggle.hidden = true;
     loginForm.reset();
     registerForm.reset();
   }
@@ -236,6 +245,7 @@
   async function enterApp() {
     authView.hidden = true;
     appView.hidden = false;
+    chatToggle.hidden = false;
     accountNameEl.textContent = "";
     if (!window.location.hash) window.location.hash = "#/catalog";
     const route = currentRoute();
@@ -355,6 +365,88 @@
     div.textContent = String(str);
     return div.innerHTML;
   }
+
+  // ---------- front desk chat (AI agent) ----------
+  let chatBusy = false;
+
+  function openChat() {
+    chatPanel.hidden = false;
+    chatToggle.setAttribute("aria-expanded", "true");
+    chatInput.focus();
+  }
+
+  function closeChat() {
+    chatPanel.hidden = true;
+    chatToggle.setAttribute("aria-expanded", "false");
+  }
+
+  function resetChat() {
+    closeChat();
+    chatBusy = false;
+    // Keep only the initial greeting bubble.
+    const greeting = chatLog.firstElementChild;
+    chatLog.innerHTML = "";
+    if (greeting) chatLog.appendChild(greeting);
+  }
+
+  function appendChatMessage(from, text, variant) {
+    const row = document.createElement("div");
+    row.className = "chat-msg chat-msg--" + variant;
+    row.innerHTML = `<span class="chat-msg__from">${escapeHtml(from)}</span><p></p>`;
+    row.querySelector("p").textContent = text;
+    chatLog.appendChild(row);
+    chatLog.scrollTop = chatLog.scrollHeight;
+    return row;
+  }
+
+  function appendChatPending() {
+    const row = document.createElement("div");
+    row.className = "chat-msg chat-msg--agent chat-msg--pending";
+    row.innerHTML = `
+      <span class="chat-msg__from">Front Desk</span>
+      <p><span class="chat-typing"><span></span><span></span><span></span></span></p>
+    `;
+    chatLog.appendChild(row);
+    chatLog.scrollTop = chatLog.scrollHeight;
+    return row;
+  }
+
+  chatToggle.addEventListener("click", openChat);
+  chatClose.addEventListener("click", closeChat);
+
+  chatForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (chatBusy) return;
+
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    appendChatMessage("You", message, "user");
+    chatInput.value = "";
+    chatInput.disabled = true;
+    const sendBtn = chatForm.querySelector(".chat-form__send");
+    sendBtn.disabled = true;
+    chatBusy = true;
+
+    const pendingRow = appendChatPending();
+
+    try {
+      const data = await api("/agent", {
+        method: "POST",
+        body: JSON.stringify({ message }),
+      });
+      pendingRow.remove();
+      appendChatMessage("Front Desk", data.response || "(no response)", "agent");
+    } catch (err) {
+      pendingRow.remove();
+      appendChatMessage("Front Desk", err.message || "Couldn't reach the desk clerk. Try again.", "error");
+    } finally {
+      chatInput.disabled = false;
+      sendBtn.disabled = false;
+      chatBusy = false;
+      chatInput.focus();
+    }
+  });
 
   // ---------- boot ----------
   (async function boot() {

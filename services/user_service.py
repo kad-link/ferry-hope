@@ -33,7 +33,7 @@ def get_all_users_service(
 
 def find_user(
         user_id: int,
-        db: Session = Depends(get_db)
+        db: Session
 ):
 
     db_user = db.query(db_models.User).filter(

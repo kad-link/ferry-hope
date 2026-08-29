@@ -10,7 +10,7 @@ app.add_middleware(
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
-    allow_credentials=["*"]
+    allow_credentials=False
 )
 
 app.include_router(user.router)

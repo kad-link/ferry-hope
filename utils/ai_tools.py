@@ -1,7 +1,7 @@
 from langchain.tools import tool, ToolRuntime
 from database import session
 from services.order_service import get_all_orders, get_order_by_id, place_order_service, mark_delivered, cancel_order
-
+from services import order_service
 
 @tool
 def fetch_all_orders_tool(
@@ -55,7 +55,7 @@ def mark_delivered(
     user_id = runtime.context.user_id
 
     with session() as db:
-        return mark_delivered(order_id, user_id, db)
+        return order_service.mark_delivered(order_id, user_id, db)
 
 
 @tool
@@ -69,5 +69,5 @@ def cancel_order(
     user_id = runtime.context.user_id
 
     with session() as db:
-        return cancel_order(order_id, user_id, db)
+        return order_service.cancel_order(order_id, user_id, db)
 

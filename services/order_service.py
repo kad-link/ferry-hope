@@ -65,6 +65,9 @@ def mark_delivered(
 
     db_order.status = OrderStatus.DELIVERED
 
+    db.commit()
+    db.refresh(db_order)
+
     return db_order.status
 
 
@@ -80,5 +83,8 @@ def cancel_order(
         ).first()
     
     db_order.status = OrderStatus.CANCELED
+
+    db.commit()
+    db.refresh(db_order)
     
     return db_order.status

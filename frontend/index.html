@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Counter — Order Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ AUTH VIEW ============ -->
+<section id="auth-view" class="view">
+  <div class="auth-wrap">
+    <div class="brand-mark">
+      <span class="brand-mark__glyph">&#9670;</span>
+      <span class="brand-mark__text">The Counter</span>
+    </div>
+    <p class="brand-tagline">order desk &amp; dispatch ledger</p>
+
+    <div class="ticket auth-ticket">
+      <div class="ticket__tabs" role="tablist">
+        <button class="ticket__tab is-active" data-tab="login" role="tab" aria-selected="true">Sign in</button>
+        <button class="ticket__tab" data-tab="register" role="tab" aria-selected="false">Open an account</button>
+      </div>
+
+      <form id="login-form" class="ticket__form" autocomplete="on">
+        <label class="field">
+          <span class="field__label">Email</span>
+          <input type="email" name="user_email" required placeholder="you@example.com" autocomplete="username">
+        </label>
+        <label class="field">
+          <span class="field__label">Password</span>
+          <input type="password" name="user_password" required placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password">
+        </label>
+        <p class="field__error" id="login-error" hidden></p>
+        <button type="submit" class="stamp-btn">
+          <span>Sign in</span>
+        </button>
+      </form>
+
+      <form id="register-form" class="ticket__form" hidden autocomplete="on">
+        <label class="field">
+          <span class="field__label">Name</span>
+          <input type="text" name="user_name" required placeholder="Full name" autocomplete="name">
+        </label>
+        <label class="field">
+          <span class="field__label">Email</span>
+          <input type="email" name="user_email" required placeholder="you@example.com" autocomplete="username">
+        </label>
+        <label class="field">
+          <span class="field__label">Password</span>
+          <input type="password" name="user_password" required minlength="4" placeholder="At least 4 characters" autocomplete="new-password">
+        </label>
+        <p class="field__error" id="register-error" hidden></p>
+        <button type="submit" class="stamp-btn">
+          <span>Open account</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APP SHELL (catalog + orders) ============ -->
+<section id="app-view" class="view" hidden>
+  <header class="app-header">
+    <div class="brand-mark brand-mark--small">
+      <span class="brand-mark__glyph">&#9670;</span>
+      <span class="brand-mark__text">The Counter</span>
+    </div>
+    <nav class="app-nav">
+      <button class="app-nav__link is-active" data-route="catalog">Catalog</button>
+      <button class="app-nav__link" data-route="ledger">Dispatch Log</button>
+    </nav>
+    <div class="app-header__account">
+      <span id="account-name" class="account-name"></span>
+      <button id="logout-btn" class="link-btn">Sign out</button>
+    </div>
+  </header>
+
+  <!-- Catalog -->
+  <main id="catalog-route" class="route">
+    <div class="route__intro">
+      <h1>On the counter today</h1>
+      <p>Pick a piece. One tap files the order — no cart, no fuss.</p>
+    </div>
+    <div id="catalog-status" class="status-line" hidden></div>
+    <div id="catalog-grid" class="catalog-grid" aria-live="polite"></div>
+  </main>
+
+  <!-- Orders / ledger -->
+  <main id="ledger-route" class="route" hidden>
+    <div class="route__intro">
+      <h1>Dispatch log</h1>
+      <p>Every order you've filed, stamped and timed.</p>
+    </div>
+    <div id="ledger-status" class="status-line" hidden></div>
+    <div id="ledger-list" class="ledger-list" aria-live="polite"></div>
+  </main>
+</section>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -23,3 +23,9 @@ class OrderResponse(BaseModel):
     product_id: int
     placed_at: datetime
     status: str
+
+class AIRequest(BaseModel):
+    message: str
+
+class AIResponse(BaseModel):
+    response: str

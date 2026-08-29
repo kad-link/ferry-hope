@@ -1,0 +1,45 @@
+from langchain.tools import tool, ToolRuntime
+from database import session
+from services.order_service import get_all_orders, get_order_by_id, place_order_service
+
+
+@tool
+def fetch_all_orders_tool(
+    runtime: ToolRuntime
+):
+    
+    """Fetch all orders of a user"""
+
+    user_id = runtime.context.user_id
+
+    with session() as db:
+        return get_all_orders(user_id, db)
+
+
+@tool
+def fetch_particular_order(
+    order_id: int,
+    runtime: ToolRuntime
+):
+    
+    """Fetch a particular user order"""
+
+    user_id = runtime.context.user_id
+    
+    with session() as db:
+        return get_order_by_id(order_id, user_id, db)
+
+
+@tool
+def place_an_order(
+    product_id: int,
+    runtime: ToolRuntime
+):
+
+    """Place an order for product with product_id for user_id"""
+
+    user_id = runtime.context.user_id
+    
+    with session() as db:
+        return place_order_service(user_id, product_id, db)
+    

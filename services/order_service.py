@@ -1,6 +1,3 @@
-from schemas import UserResponse
-from dependencies import get_db
-from fastapi import Depends
 from sqlalchemy.orm import Session
 from db_models import Order
 import db_models
@@ -9,7 +6,7 @@ import db_models
 def place_order_service(
         user_id: int,
         product_id: int,
-        db: Session = Depends(get_db)
+        db: Session 
 ):
 
     db_product = db.query(db_models.Product).filter(
@@ -33,22 +30,22 @@ def place_order_service(
 
 
 def get_all_orders(
-        user: UserResponse,
+        user_id: int,
+        db: Session 
 ):
 
-    return user.orders
+    return db.query(db_models.Order).filter(
+        db_models.Order.ordered_by == user_id
+    ).all()
 
 
 def get_order_by_id(
         order_id: int,
-        db: Session = Depends(get_db)
+        user_id: int,
+        db: Session 
 ):
 
-    db_product = db.query(db_models.Order).filter(
-        db_models.Order.order_id == order_id
+    return db.query(db_models.Order).filter(
+        db_models.Order.order_id == order_id,
+        db_models.Order.ordered_by == user_id
     ).first()
-
-    if not db_product:
-        return None
-
-    return db_product

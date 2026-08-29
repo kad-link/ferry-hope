@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from routes import user, order, auth, product
+from routes import user, order, auth, product, agent
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -17,7 +17,7 @@ app.include_router(user.router)
 app.include_router(order.router)
 app.include_router(auth.router)
 app.include_router(product.router)
-
+app.include_router(agent.router)
 
 @app.exception_handler(Exception)
 def global_exception_handler(request: Request, exc: Exception):

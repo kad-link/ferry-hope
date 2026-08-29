@@ -13,7 +13,17 @@ def fetch_all_orders_tool(
     user_id = runtime.context.user_id
 
     with session() as db:
-        return get_all_orders(user_id, db)
+        orders = get_all_orders(user_id, db)
+
+    if not orders:
+        return "This user has no orders yet."
+
+    lines = [
+        f"Order #{o.order_id}: product_id={o.product_id}, "
+        f"status={o.status}, placed_at={o.placed_at}"
+        for o in orders
+    ]
+    return "\n".join(lines)
 
 
 @tool

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from schemas import OrderResponse
+from schemas import OrderResponse, OrderCreate
 from sqlalchemy.orm import Session
 from dependencies import get_db
 from services.user_service import find_user
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/user/{user_id}/orders", tags=["Orders"])
 @router.post("", response_model=OrderResponse)
 def place_order(
     user_id: int,
-    product_id: int,
+    order: OrderCreate,
     db: Session = Depends(get_db)
 ):
 
@@ -21,7 +21,7 @@ def place_order(
     if not db_user:
         raise HTTPException(status_code=404, detail="User not identified")
 
-    new_order = place_order_service(user_id, product_id, db)
+    new_order = place_order_service(user_id, order.product_id, db)
 
     if not new_order:
         raise HTTPException(status_code=404, detail="Product not existing in inventory")
@@ -40,7 +40,7 @@ def get_all_orders(
     if not db_user:
         raise HTTPException(status_code=404, detail="User not there")
 
-    return order_service.get_all_orders(db_user, db)
+    return order_service.get_all_orders(db_user.user_id, db)
 
 
 @router.get("/{order_id}", response_model=OrderResponse)
